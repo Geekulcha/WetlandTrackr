@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Laravel PHP Framework</title>
+	<title>Welcome | WetlandTrackr</title>
 	<style>
 		@import url(//fonts.googleapis.com/css?family=Lato:700);
 
@@ -38,7 +38,7 @@
 		<a href="https://2014.spaceappschallenge.org/" title="SpaceApps"><img src="https://2014.spaceappschallenge.org/static/images/navbar-nav-logo.png" alt="SpaceApps Challenge"></a>
         <br/><br/>
         <a href="http://geekulcha.com" title="Geekulcha"><img src="http://geekulcha.com/assets/img/logo2-default.png" alt="Geekulcha"></a>
-        <h1>SpaceApps Challenge 2014 WetlandTrack</h1> <br/><br/>
+        <h1>SpaceApps Challenge 2014 WetlandTrackr</h1> <br/><br/>
         <h1>Coming soon . . .</h1>
     </div>
 </body>
