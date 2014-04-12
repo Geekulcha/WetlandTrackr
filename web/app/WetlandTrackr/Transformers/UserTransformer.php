@@ -8,7 +8,7 @@ class UserTransformer extends Transformer{
         return array(
             'full_name' => $user['name'],
             'username'  => $user['username'],
-            'email' => $user['email'],
+            'email'     => $user['email'],
         );
     }
 } 
