@@ -15,27 +15,28 @@ import android.widget.Toast;
 public class WetlandTrackr extends Activity {
 
 	LocationManager locMan;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wetland_trackr);
-		
-		//Let's test if the internet connection is available
-		if(isNetworkAvailable()) {
-			
-			//get location manager
-			locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-			//get last location
-			Location lastLoc = locMan.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+		// Let's test if the internet connection is available
+		if (isNetworkAvailable()) {
+
+			// get location manager
+			locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			// get last location
+			Location lastLoc = locMan
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			double lat = lastLoc.getLatitude();
 			double lng = lastLoc.getLongitude();
-			
+
 			Toaster(String.valueOf(lat) + " \n " + String.valueOf(lng));
-		}
-		else {
+		} else {
 			Toaster("You don't seem connected to a network");
 		}
-		
+
 	}
 
 	@Override
@@ -44,35 +45,34 @@ public class WetlandTrackr extends Activity {
 		getMenuInflater().inflate(R.menu.wetland_trackr, menu);
 		return true;
 	}
-	
-	//Method to check network availbility
+
+	// Method to check network availbility
 	private boolean isNetworkAvailable() {
-    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    
-      NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-      return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-}
-	
-//If the user want to exit from the app
-	public void Exit()
-	{
-		new AlertDialog.Builder(this)
-        .setMessage("Are you sure you want to exit?")
-        .setCancelable(false)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                 WetlandTrackr.this.finish();
-            }
-        })
-        .setNegativeButton("No", null)
-        .show();
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
-	
-	//Toaster nmethod 
-	
-   public void Toaster(String bread) {
-	   Toast.makeText(WetlandTrackr.this, bread, Toast.LENGTH_SHORT).show();
-	   
-   }
+
+	// If the user want to exit from the app
+	public void Exit() {
+		new AlertDialog.Builder(this)
+				.setMessage("Are you sure you want to exit?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								WetlandTrackr.this.finish();
+							}
+						}).setNegativeButton("No", null).show();
+	}
+
+	// Toaster nmethod
+
+	public void Toaster(String bread) {
+		Toast.makeText(WetlandTrackr.this, bread, Toast.LENGTH_SHORT).show();
+
+	}
 
 }
