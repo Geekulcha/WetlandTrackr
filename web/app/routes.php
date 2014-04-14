@@ -11,6 +11,11 @@
 |
 */
 
+Route::group(array('prefix' => 'api/v1'), function() {
+    Route::resource('users', 'UsersApiController');
+    Route::resource('wetland_datas', 'WetlandDatasApiController');
+});
+
 Route::get('/', function()
 {
 	return View::make('hello');
