@@ -2,7 +2,10 @@ package com.geekulcha.wetlandtrackr;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +66,6 @@ public class CaptureImage extends Activity {
 	LocationManager locMan;
 	double lat, lng;
 	private String jsonImage;
-	private byte[] bs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -286,6 +288,39 @@ public class CaptureImage extends Activity {
 					f.delete();
 
 					jsonImage = getStringFromBitmap(newImage);
+					String path = android.os.Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "Phoenix" + File.separator + "default";
+
+					OutputStream outFile = null;
+
+					File file = new File(path, String.valueOf(System
+							.currentTimeMillis()) + ".jpg");
+
+					try {
+						outFile = new FileOutputStream(file);
+
+						thumbnail.compress(Bitmap.CompressFormat.JPEG, 85,
+								outFile);
+
+						outFile.flush();
+
+						outFile.close();
+
+					} catch (FileNotFoundException e) {
+
+						e.printStackTrace();
+
+					} catch (IOException e) {
+
+						e.printStackTrace();
+
+					} catch (Exception e) {
+
+						e.printStackTrace();
+
+					}
 
 				} catch (Exception e) {
 
