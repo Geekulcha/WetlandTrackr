@@ -34,7 +34,7 @@ public class Login extends Activity {
 	private Button login;
 	private SharedPreferences pre;
 	private Editor ed;
-	private String url = "http://192.168.1.136/wetlandtrackr/login.php?json=";
+	private String url = "http://192.168.1.123/wetlandtrackr/login.php?json=";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,6 @@ public class Login extends Activity {
 			startActivity(new Intent(Login.this, CaptureImage.class));
 			finish();
 		}
-		
 
 	}
 
@@ -74,7 +73,7 @@ public class Login extends Activity {
 				js.put("password", password.getText().toString());
 				Log.d("TAG", js.toString());
 				StringRequest request = new StringRequest(Request.Method.POST,
-						url+js, new Response.Listener<String>() {
+						url + js, new Response.Listener<String>() {
 
 							@Override
 							public void onResponse(String arg0) {

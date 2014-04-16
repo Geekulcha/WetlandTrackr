@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <permission android:name="com.geekulcha.wetlandtrackr.googlemapsv2.permission.MAPS_RECIEVE" >
+    <permission android:name="com.geekulcha.wetlandtrackr.permission.MAPS_RECIEVE" >
     </permission>
 
     <uses-feature android:name="android.hardware.camera" />
@@ -33,11 +33,12 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCvBOMSWv5idI2ttdUUiD6Ez-YyIZYUmy4" />
-        
+            android:value="AIzaSyCMUN64tSpV7R1VpOhk4EEWDoZTPOFWV4A" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:name="com.geekulcha.wetlandtrackr.WetlandTrackr"

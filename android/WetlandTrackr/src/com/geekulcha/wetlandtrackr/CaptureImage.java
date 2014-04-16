@@ -1,38 +1,22 @@
 package com.geekulcha.wetlandtrackr;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.hardware.Camera.PictureCallback;
-
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -42,8 +26,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,13 +38,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 public class CaptureImage extends Activity {
 	private String TAG = CaptureImage.class.getSimpleName();
 	Uri imageUri;
 	static TextView imageDetails = null;
 	public static ImageView image = null;
-	CaptureImage CameraActivity = null;
-	private static final int CAM_REQUREST = 1;
+
 	public Button take;
 	Bitmap thumbnail;
 	private Button access;
@@ -69,10 +59,11 @@ public class CaptureImage extends Activity {
 	private Button cancel;
 	File file;
 	private SharedPreferences pre;
-	private Editor ed;
-	private String url = "http://192.168.1.136/add_wetlandr/login.php?json=";
+	private String url = "http://192.168.1.140/wetlandtrackr/add_wetlandr.php?json=";
 	LocationManager locMan;
 	double lat, lng;
+	private String jsonImage;
+	private byte[] bs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,39 +118,12 @@ public class CaptureImage extends Activity {
 		imageDetails = (TextView) findViewById(R.id.imageDetails);
 		image = (ImageView) findViewById(R.id.image);
 		take = (Button) findViewById(R.id.take);
-
+		submit.setOnClickListener(new btnSubmit());
 		take.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-
-				Calendar cal = Calendar.getInstance();
-				file = new File(cal.getTimeInMillis() + ".jpg");
-				if (!file.exists()) {
-					try {
-						file.createNewFile();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else {
-					file.delete();
-					try {
-						file.createNewFile();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				imageUri = Uri.fromFile(file);
-
-				Log.d(TAG, "Freebies " + file);
-
-				Intent cameraIntent = new Intent(
-						android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(cameraIntent, CAM_REQUREST);
-
+				selectImage();
 			}
 		});
 	}
@@ -171,6 +135,8 @@ public class CaptureImage extends Activity {
 			JSONObject jo = new JSONObject();
 
 			try {
+				jo.put("pictures", (jsonImage != null) ? "no-image" : jsonImage);
+
 				jo.put("lat", lat);
 
 				jo.put("lon", lng);
@@ -178,12 +144,11 @@ public class CaptureImage extends Activity {
 
 				jo.put("comments", comment.getText().toString());
 
-				jo.put("pictures", "2");
-
 				RequestQueue queue = Volley
 						.newRequestQueue(getApplicationContext());
-				StringRequest request = new StringRequest(Request.Method.POST,
-						url + jo, new Response.Listener<String>() {
+				Log.w(TAG, url + jo);
+				StringRequest request = new StringRequest(url + jo,
+						new Response.Listener<String>() {
 
 							@Override
 							public void onResponse(String arg0) {
@@ -216,6 +181,7 @@ public class CaptureImage extends Activity {
 
 				queue.add(request);
 				Log.i("TAG", jo.toString());
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -223,6 +189,21 @@ public class CaptureImage extends Activity {
 
 		}
 
+	}
+
+	private String getStringFromBitmap(Bitmap bitmapPicture) {
+		/*
+		 * This functions converts Bitmap picture to a string which can be
+		 * JSONified.
+		 */
+		final int COMPRESSION_QUALITY = 100;
+		String encodedImage;
+		ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+		bitmapPicture.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY,
+				byteArrayBitmapStream);
+		byte[] b = byteArrayBitmapStream.toByteArray();
+		encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+		return encodedImage;
 	}
 
 	private void allow(int id) {
@@ -242,44 +223,6 @@ public class CaptureImage extends Activity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-		if (requestCode == CAM_REQUREST && resultCode == RESULT_OK) {
-
-			Log.d(TAG, data.getExtras().get("data").toString());
-
-			thumbnail = (Bitmap) data.getExtras().get("data");
-			image.setImageBitmap(thumbnail);
-			OutputStream op = null;
-			if (thumbnail != null) {
-				Toast.makeText(getApplicationContext(),
-						"ok " + thumbnail.getByteCount(), Toast.LENGTH_LONG)
-						.show();
-
-			}
-		}
-
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		thumbnail = (Bitmap) getLastNonConfigurationInstance();
-		image.setImageBitmap(thumbnail);
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-
-	}
-
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-		// TODO Auto-generated method stub
-		return thumbnail;
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -291,7 +234,7 @@ public class CaptureImage extends Activity {
 		try {
 			JSONObject obj = new JSONObject(arg0);
 			if (obj.getString("success").equals("1")) {
-
+				Log.i("TAG", obj.toString());
 				JSONArray array = obj.getJSONArray("wetland_data");
 				JSONObject jso = new JSONObject();
 				for (int i = 0; i < array.length(); ++i) {
@@ -308,6 +251,118 @@ public class CaptureImage extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK) {
+			if (requestCode == 1) {
+
+				File f = new File(Environment.getExternalStorageDirectory()
+						.toString());
+
+				for (File temp : f.listFiles()) {
+					if (temp.getName().equals("temp.jpg")) {
+						f = temp;
+						break;
+					}
+				}
+
+				try {
+					if (thumbnail != null && !thumbnail.isRecycled()) {
+						thumbnail = null;
+					}
+
+					thumbnail = BitmapFactory.decodeFile(f.getAbsolutePath());
+
+					Bitmap newImage = Bitmap.createScaledBitmap(thumbnail, 800,
+							800, false);
+
+					image.setBackgroundResource(0);
+					image.setImageBitmap(newImage);
+
+					f.delete();
+
+					jsonImage = getStringFromBitmap(newImage);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+
+				}
+
+			} else if (requestCode == 2) {
+
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+				Cursor cursor = getContentResolver().query(selectedImage,
+						filePathColumn, null, null, null);
+				cursor.moveToFirst();
+
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				String filePath = cursor.getString(columnIndex); // file path of
+																	// selected
+																	// image
+				cursor.close();
+				// Convert file path into bitmap image using below line.
+
+				thumbnail = BitmapFactory.decodeFile(filePath);
+
+				Bitmap newBitmap = Bitmap.createScaledBitmap(thumbnail, 800,
+						800, false);
+
+				// put bitmapimage in your imageview
+				image.setImageBitmap(newBitmap);
+				jsonImage = getStringFromBitmap(newBitmap);
+
+			}
+
+		}
+	}
+
+	private void selectImage() {
+
+		final CharSequence[] options = { "Take Photo", "Choose from Gallery",
+				"Cancel" };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(CaptureImage.this);
+
+		builder.setTitle("Add Photo!");
+
+		builder.setItems(options, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+
+				if (options[item].equals("Take Photo")) {
+
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					File f = new File(android.os.Environment
+							.getExternalStorageDirectory(), "temp.jpg");
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+					startActivityForResult(intent, 1);
+
+				} else if (options[item].equals("Choose from Gallery")) {
+
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+					intent.setType("image/*");
+					startActivityForResult(intent, 2);
+
+				} else if (options[item].equals("Cancel")) {
+
+					dialog.dismiss();
+
+				}
+
+			}
+
+		});
+
+		builder.show();
+
 	}
 
 	@Override
