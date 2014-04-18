@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wetland"
+    android:orientation="vertical"
+    tools:context="com.geekulcha.wetlandtrackr.CaptureImage$PlaceholderFragment" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent" >
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="14dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_launcher" />
+
+                <Button
+                    android:id="@+id/take"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignRight="@+id/image"
+                    android:layout_below="@+id/image"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/round_l"
+                    android:text="Take Photo"
+                    android:textColor="@android:color/holo_orange_dark" />
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/take"
+                    android:layout_below="@+id/take"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="15dp"
+                    android:ems="10"
+                    android:hint="name"
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textColorHint="@android:color/holo_orange_dark" />
+
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/name"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="15dp"
+                    android:ems="10"
+                    android:hint="description"
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textColorHint="@android:color/holo_orange_dark" />
+
+                <Button
+                    android:id="@+id/submit"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/description"
+                    android:layout_below="@+id/description"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round"
+                    android:text="Submit"
+                    android:textColor="@android:color/holo_orange_dark" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/submit"
+                    android:layout_alignBottom="@+id/submit"
+                    android:layout_alignRight="@+id/description"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round"
+                    android:text="Cancel"
+                    android:textColor="@android:color/holo_orange_dark" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

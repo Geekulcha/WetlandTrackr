@@ -34,7 +34,7 @@ public class Login extends Activity {
 	private Button login;
 	private SharedPreferences pre;
 	private Editor ed;
-	private String url = "http://192.168.1.123/wetlandtrackr/login.php?json=";
+	private String url = "http://wlt.geekulcha.com/apis/login.php?json=";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,8 @@ public class Login extends Activity {
 		password = (EditText) findViewById(R.id.password);
 		login = (Button) findViewById(R.id.login);
 		login.setOnClickListener(new btnLogin());
-
+		pre.edit().remove("logged");
+		
 		if (pre.contains("logged")) {
 			startActivity(new Intent(Login.this, CaptureImage.class));
 			finish();

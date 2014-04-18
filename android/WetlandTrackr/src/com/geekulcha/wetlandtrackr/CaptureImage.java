@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -47,13 +48,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.geekulcha.wetlandtrackr.locators.GPSTracker;
 
 public class CaptureImage extends Activity {
 	private String TAG = CaptureImage.class.getSimpleName();
 	Uri imageUri;
-	static TextView imageDetails = null;
 	public static ImageView image = null;
-
 	public Button take;
 	Bitmap thumbnail;
 	private Button access;
@@ -62,40 +62,25 @@ public class CaptureImage extends Activity {
 	private Button cancel;
 	File file;
 	private SharedPreferences pre;
-	private String url = "http://192.168.1.140/wetlandtrackr/add_wetlandr.php?json=";
+	private String url = "http://wlt.geekulcha.com/apis/add_wetlandr.php?json=";
 	LocationManager locMan;
 	double lat, lng;
 	private String jsonImage;
+	private GPSTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_capture_image);
-		if (isNetworkAvailable()) {
+		tracker = new GPSTracker(CaptureImage.this);
 
-			// get location manager
-			locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			// get last location
-			Location lastLoc = locMan
-					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-			lat = lastLoc.getLatitude();
-			lng = lastLoc.getLongitude();
+		lat = tracker.getLatitude();
+		lng = tracker.getLongitude();
+		Log.w(TAG, lng + " " + lat);
 
-			// Toaster(String.valueOf(lat) + " \n " + String.valueOf(lng));
-		} else {
-
-		}
+		// Toaster(String.valueOf(lat) + " \n " + String.valueOf(lng));
 
 		setFields();
-	}
-
-	// Method to check network availbility
-	private boolean isNetworkAvailable() {
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-		NetworkInfo activeNetworkInfo = connectivityManager
-				.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
 	private void setFields() {
@@ -117,7 +102,7 @@ public class CaptureImage extends Activity {
 
 		submit = (Button) findViewById(R.id.submit);
 		cancel = (Button) findViewById(R.id.cancel);
-		imageDetails = (TextView) findViewById(R.id.imageDetails);
+
 		image = (ImageView) findViewById(R.id.image);
 		take = (Button) findViewById(R.id.take);
 		submit.setOnClickListener(new btnSubmit());
@@ -216,9 +201,8 @@ public class CaptureImage extends Activity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								startActivity(new Intent(
-										getApplicationContext(),
-										CaptureImage.class).putExtra("wet_id",
-										id));
+										getApplicationContext(), Plants.class)
+										.putExtra("wet_id", id));
 							}
 						}).setNegativeButton("No", null).show();
 
@@ -241,7 +225,7 @@ public class CaptureImage extends Activity {
 				JSONObject jso = new JSONObject();
 				for (int i = 0; i < array.length(); ++i) {
 					jso = array.getJSONObject(i);
-
+					Log.w(TAG, jso.getInt("id") + "");
 					allow(jso.getInt("id"));
 				}
 			} else {
@@ -288,39 +272,6 @@ public class CaptureImage extends Activity {
 					f.delete();
 
 					jsonImage = getStringFromBitmap(newImage);
-					String path = android.os.Environment
-							.getExternalStorageDirectory()
-							+ File.separator
-							+ "Phoenix" + File.separator + "default";
-
-					OutputStream outFile = null;
-
-					File file = new File(path, String.valueOf(System
-							.currentTimeMillis()) + ".jpg");
-
-					try {
-						outFile = new FileOutputStream(file);
-
-						thumbnail.compress(Bitmap.CompressFormat.JPEG, 85,
-								outFile);
-
-						outFile.flush();
-
-						outFile.close();
-
-					} catch (FileNotFoundException e) {
-
-						e.printStackTrace();
-
-					} catch (IOException e) {
-
-						e.printStackTrace();
-
-					} catch (Exception e) {
-
-						e.printStackTrace();
-
-					}
 
 				} catch (Exception e) {
 
@@ -406,8 +357,9 @@ public class CaptureImage extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		if (id == R.id.logout) {
+			pre.edit().clear();
+			startActivity(new Intent(getApplicationContext(), Login.class));
 		}
 		return super.onOptionsItemSelected(item);
 	}

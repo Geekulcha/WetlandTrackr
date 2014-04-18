@@ -64,6 +64,10 @@
             android:name="com.geekulcha.wetlandtrackr.LandAccess"
             android:label="@string/title_activity_land_access" >
         </activity>
+        <activity
+            android:name="com.geekulcha.wetlandtrackr.Plants"
+            android:label="@string/title_activity_plants" >
+        </activity>
     </application>
 
 </manifest>

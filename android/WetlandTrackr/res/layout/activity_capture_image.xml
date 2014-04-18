@@ -1,7 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/wetland"
+    android:orientation="vertical"
     tools:context="com.geekulcha.wetlandtrackr.CaptureImage$PlaceholderFragment" >
 
     <ScrollView
@@ -10,92 +12,91 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-               
-                android:layout_weight="0.03"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_launcher" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent" >
 
-            <TextView
-                android:id="@+id/imageDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="TextView" />
-
-            <TableRow
-                android:id="@+id/tableRow1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" >
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="14dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_launcher" />
 
                 <Button
                     android:id="@+id/take"
-                    android:layout_width="148dp"
+                    android:layout_width="110dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/image"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="11dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/holo_green_light"
-                    android:text="Take A Photo" />
+                    android:layout_marginTop="15dp"
+                    android:text="Take Photo"
+                    android:background="@drawable/round_l"
+                    android:textColor="@android:color/holo_orange_dark" />
 
                 <Button
                     android:id="@+id/access"
-                    android:layout_width="154dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/take"
+                    android:layout_alignBottom="@+id/take"
                     android:layout_alignParentRight="true"
-                    android:layout_marginLeft="26dp"
-                    android:background="@android:color/holo_green_light"
-                    android:text="Can&apos;t Access" />
-            </TableRow>
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Access via map"
+                    android:background="@drawable/round_l"
+                    android:textColor="@android:color/holo_orange_dark" />
 
-            <EditText
-                android:id="@+id/comment"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/take"
-                android:layout_marginTop="22dp"
-                android:layout_weight="0.12"
-                android:ems="10"
-                android:hint="comment"
-                android:inputType="textMultiLine" >
-
-                <requestFocus />
-            </EditText>
-
-            <TableRow
-                android:id="@+id/tableRow1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" >
+                <EditText
+                    android:id="@+id/comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/take"
+                    android:layout_alignRight="@+id/access"
+                    android:layout_below="@+id/take"
+                    android:layout_marginTop="15dp"
+                    android:ems="10"
+                    android:hint="comments"
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textColorHint="@android:color/holo_orange_dark" />
 
                 <Button
                     android:id="@+id/submit"
-                    android:layout_width="148dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="11dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/holo_green_light"
-                    android:text="Submit" />
+                    android:layout_alignLeft="@+id/comment"
+                    android:layout_alignRight="@+id/take"
+                    android:layout_below="@+id/comment"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round"
+                    android:text="Submit"
+                    android:textColor="@android:color/holo_orange_dark" />
 
                 <Button
                     android:id="@+id/cancel"
-                    android:layout_width="154dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="26dp"
-                    android:background="@android:color/holo_green_light"
-                    android:text="Cancel" />
-            </TableRow>
+                    android:layout_alignBaseline="@+id/submit"
+                    android:layout_alignBottom="@+id/submit"
+                    android:layout_alignLeft="@+id/access"
+                    android:layout_alignRight="@+id/comment"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round"
+                    android:text="Cancel"
+                    android:textColor="@android:color/holo_orange_dark" />
+
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>
