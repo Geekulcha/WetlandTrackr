@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wetland"
+    android:background="#ECE5D9"
     android:orientation="vertical"
     tools:context="com.geekulcha.wetlandtrackr.CaptureImage$PlaceholderFragment" >
 
@@ -25,25 +25,22 @@
                     android:layout_height="260dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginRight="7dp"
-                    android:layout_marginTop="14dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/app_logo" />
 
                 <Button
                     android:id="@+id/take"
-                    android:layout_width="110dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignRight="@+id/image"
                     android:layout_below="@+id/image"
                     android:layout_marginLeft="7dp"
                     android:layout_marginRight="7dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="55dp"
                     android:background="@drawable/round_l"
                     android:text="Take Photo"
-                    android:textColor="@android:color/holo_orange_dark" />
+                    android:textColor="@android:color/white" />
 
                 <EditText
                     android:id="@+id/name"
@@ -51,14 +48,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/take"
                     android:layout_below="@+id/take"
-                    android:layout_marginLeft="7dp"
                     android:layout_marginRight="7dp"
                     android:layout_marginTop="15dp"
                     android:ems="10"
                     android:hint="name"
                     android:inputType="textMultiLine"
-                    android:textColor="@android:color/holo_orange_dark"
-                    android:textColorHint="@android:color/holo_orange_dark" />
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColorHint="@android:color/holo_blue_dark" />
 
                 <EditText
                     android:id="@+id/description"
@@ -71,8 +67,8 @@
                     android:ems="10"
                     android:hint="description"
                     android:inputType="textMultiLine"
-                    android:textColor="@android:color/holo_orange_dark"
-                    android:textColorHint="@android:color/holo_orange_dark" />
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColorHint="@android:color/holo_blue_dark" />
 
                 <Button
                     android:id="@+id/submit"
@@ -80,11 +76,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/description"
                     android:layout_below="@+id/description"
-                    android:layout_marginLeft="7dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/round"
+                    android:background="@drawable/round_l"
                     android:text="Submit"
-                    android:textColor="@android:color/holo_orange_dark" />
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/cancel"
@@ -93,12 +89,23 @@
                     android:layout_alignBaseline="@+id/submit"
                     android:layout_alignBottom="@+id/submit"
                     android:layout_alignRight="@+id/description"
-                    android:layout_marginRight="7dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/round"
+                    android:background="@drawable/round_l"
                     android:text="Cancel"
-                    android:textColor="@android:color/holo_orange_dark" />
+                    android:textColor="@android:color/white" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:gravity="center"
+                android:text="\u00A9WetlandTrackr 2014"
+                android:textColor="@android:color/holo_blue_dark" />
         </LinearLayout>
     </ScrollView>
 

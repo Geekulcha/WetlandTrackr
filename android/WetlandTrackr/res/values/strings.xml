@@ -9,11 +9,11 @@
     <string name="the_team">The Team</string>
     <string name="contact">Contact</string>
     <string name="help">Help</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log Out</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_capture_image">CaptureImage</string>
+    <string name="title_activity_capture_image">WetlandTrackr</string>
     <string name="title_activity_login">Wetland Trackr</string>
-    <string name="title_activity_land_access">LandAccess</string>
-    <string name="title_activity_plants">Plants</string>
+    <string name="title_activity_land_access">WetlandTrackr</string>
+    <string name="title_activity_plants">WetlandTrackr</string>
 
 </resources>

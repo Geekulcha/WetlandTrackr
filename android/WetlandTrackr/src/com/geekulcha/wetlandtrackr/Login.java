@@ -51,12 +51,11 @@ public class Login extends Activity {
 		password = (EditText) findViewById(R.id.password);
 		login = (Button) findViewById(R.id.login);
 		login.setOnClickListener(new btnLogin());
-		pre.edit().remove("logged");
-		
-		if (pre.contains("logged")) {
-			startActivity(new Intent(Login.this, CaptureImage.class));
-			finish();
-		}
+
+		/*
+		 * if (pre.contains("logged")) { startActivity(new Intent(Login.this,
+		 * CaptureImage.class)); finish(); }
+		 */
 
 	}
 
@@ -89,6 +88,7 @@ public class Login extends Activity {
 							public void onErrorResponse(VolleyError arg0) {
 								// TODO Auto-generated method stub
 								Log.d("TAG", arg0.toString());
+								toaster("Please check your network connection");
 							}
 						});
 				queue.add(request);
@@ -100,6 +100,11 @@ public class Login extends Activity {
 
 	}
 
+	private void toaster(String message) {
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG)
+				.show();
+	}
+
 	private void voly(String arg0) {
 		try {
 			JSONObject obj = new JSONObject(arg0);
@@ -109,7 +114,7 @@ public class Login extends Activity {
 				JSONObject jso = new JSONObject();
 				for (int i = 0; i < array.length(); ++i) {
 					jso = array.getJSONObject(i);
-
+					Log.i("TAG", jso.getString("userID"));
 					ed.putInt("userID", jso.getInt("userID"));
 					ed.putString("logged", "logged");
 					ed.commit();
@@ -117,8 +122,7 @@ public class Login extends Activity {
 					startActivity(new Intent(Login.this, CaptureImage.class));
 				}
 			} else {
-				Toast.makeText(getApplicationContext(),
-						obj.getString("message"), Toast.LENGTH_SHORT).show();
+				toaster(obj.getString("message"));						
 				Log.i("TAG", obj.getString("message"));
 			}
 		} catch (JSONException e) {
@@ -141,7 +145,7 @@ public class Login extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.logout) {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

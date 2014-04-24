@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    tools:context="com.geekulcha.wetlandtrackr.LandAccess" >
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/textView1" />
 
     <Button
         android:id="@+id/butCancel"
@@ -17,7 +20,7 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/round_l"
         android:text="Cancel"
-        android:textColor="@android:color/holo_orange_dark" />
+        android:textColor="@android:color/holo_blue_dark" />
 
     <Button
         android:id="@+id/butTakephoto"
@@ -27,6 +30,17 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/round_l"
         android:text="Take Photo"
-        android:textColor="@android:color/holo_orange_dark" />
+        android:textColor="@android:color/holo_blue_dark" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:ems="10"
+        android:gravity="center"
+        android:text="\u00A9WetlandTrackr 2014"
+        android:textColor="@android:color/holo_blue_dark" />
 
 </RelativeLayout>

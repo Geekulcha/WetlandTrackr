@@ -6,7 +6,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +78,7 @@ public class CaptureImage extends Activity {
 	double lat, lng;
 	private String jsonImage;
 	private GPSTracker tracker;
+	private String landImage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +91,13 @@ public class CaptureImage extends Activity {
 		Log.w(TAG, lng + " " + lat);
 
 		// Toaster(String.valueOf(lat) + " \n " + String.valueOf(lng));
-
+		Log.e(TAG, lat + " " + lng);
 		setFields();
+	}
+
+	private void toaster(String message) {
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG)
+				.show();
 	}
 
 	private void setFields() {
@@ -102,7 +119,7 @@ public class CaptureImage extends Activity {
 
 		submit = (Button) findViewById(R.id.submit);
 		cancel = (Button) findViewById(R.id.cancel);
-
+		cancel.setOnClickListener(new CancelBtn());
 		image = (ImageView) findViewById(R.id.image);
 		take = (Button) findViewById(R.id.take);
 		submit.setOnClickListener(new btnSubmit());
@@ -115,60 +132,63 @@ public class CaptureImage extends Activity {
 		});
 	}
 
+	class CancelBtn implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent(CaptureImage.this, CaptureImage.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			startActivity(intent);
+
+		}
+
+	}
+
 	class btnSubmit implements OnClickListener {
 
 		@Override
 		public void onClick(View v) {
 			JSONObject jo = new JSONObject();
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss");
+			landImage = f.format(cal.getTime());
 
 			try {
-				jo.put("pictures", (jsonImage != null) ? "no-image" : jsonImage);
+				if (jsonImage != null) {
+					jo.put("picture", landImage + ".jpg");
+					jo.put("lat", lat);
+					jo.put("lon", lng);
+					jo.put("userID", pre.getInt("userID", 0));
+					jo.put("comments", comment.getText().toString());
 
-				jo.put("lat", lat);
+					RequestQueue queue = Volley
+							.newRequestQueue(getApplicationContext());
+					Log.w(TAG, url + jo);
+					StringRequest request = new StringRequest(url + jo,
+							new Response.Listener<String>() {
 
-				jo.put("lon", lng);
-				jo.put("userID", pre.getInt("userID", 0));
-
-				jo.put("comments", comment.getText().toString());
-
-				RequestQueue queue = Volley
-						.newRequestQueue(getApplicationContext());
-				Log.w(TAG, url + jo);
-				StringRequest request = new StringRequest(url + jo,
-						new Response.Listener<String>() {
-
-							@Override
-							public void onResponse(String arg0) {
-
-								try {
-									JSONObject obj = new JSONObject(arg0);
-
-									if (obj.getString("success").equals("1")) {
-										voly(arg0);
-									} else {
-										Toast.makeText(getApplicationContext(),
-												obj.getString("message"),
-												Toast.LENGTH_SHORT).show();
-										Log.i("TAG", obj.getString("message"));
-									}
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+								@Override
+								public void onResponse(String arg0) {
+									Log.w(TAG, arg0);
+									voly(arg0);
 								}
+							}, new Response.ErrorListener() {
 
-							}
-						}, new Response.ErrorListener() {
+								@Override
+								public void onErrorResponse(VolleyError arg0) {
+									// TODO Auto-generated method stub
+									toaster("Please check your network connection");
+									Log.i("TAG ERROR", arg0.toString());
+								}
+							});
 
-							@Override
-							public void onErrorResponse(VolleyError arg0) {
-								// TODO Auto-generated method stub
-								Log.i("TAG ERROR", arg0.toString());
-							}
-						});
+					queue.add(request);
 
-				queue.add(request);
-				Log.i("TAG", jo.toString());
-
+					Log.i("TAG", jo.toString());
+				} else {
+					toaster("Required field(s)");
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -193,7 +213,8 @@ public class CaptureImage extends Activity {
 		return encodedImage;
 	}
 
-	private void allow(int id) {
+	private void allow(final int Id) {
+		Log.w(TAG, Id + "");
 		new AlertDialog.Builder(this)
 				.setMessage("Any plants growing on the wet land?")
 				.setCancelable(false)
@@ -202,7 +223,7 @@ public class CaptureImage extends Activity {
 							public void onClick(DialogInterface dialog, int id) {
 								startActivity(new Intent(
 										getApplicationContext(), Plants.class)
-										.putExtra("wet_id", id));
+										.putExtra("wet_id", Id));
 							}
 						}).setNegativeButton("No", null).show();
 
@@ -221,6 +242,7 @@ public class CaptureImage extends Activity {
 			JSONObject obj = new JSONObject(arg0);
 			if (obj.getString("success").equals("1")) {
 				Log.i("TAG", obj.toString());
+				savePhotoToServer(jsonImage);
 				JSONArray array = obj.getJSONArray("wetland_data");
 				JSONObject jso = new JSONObject();
 				for (int i = 0; i < array.length(); ++i) {
@@ -229,10 +251,10 @@ public class CaptureImage extends Activity {
 					allow(jso.getInt("id"));
 				}
 			} else {
-				Toast.makeText(getApplicationContext(),
-						obj.getString("message"), Toast.LENGTH_SHORT).show();
+				toaster(obj.getString("message"));
 				Log.i("TAG", obj.getString("message"));
 			}
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -309,6 +331,50 @@ public class CaptureImage extends Activity {
 		}
 	}
 
+	private void savePhotoToServer(String value) {
+		Log.w(TAG + 12, value);
+		final ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("image", value));
+		nameValuePairs.add(new BasicNameValuePair("folder", "0"));
+		nameValuePairs.add(new BasicNameValuePair("picName", landImage));
+
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpClient httpclient = new DefaultHttpClient();
+					HttpPost httppost = new HttpPost(
+							"http://wlt.geekulcha.com/apis/upload_image.php");
+					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					HttpResponse response = httpclient.execute(httppost);
+					// final String the_string_response =
+					// convertResponseToString(response);
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							toaster("Picture successfully uploaded");
+						}
+					});
+				} catch (final Exception e) {
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							toaster("Picture not successfully uploaded");
+						}
+					});
+					System.out.println("Error in http connection "
+							+ e.toString());
+				}
+
+			}
+		});
+		thread.start();
+
+	}
+
 	private void selectImage() {
 
 		final CharSequence[] options = { "Take Photo", "Choose from Gallery",
@@ -360,6 +426,7 @@ public class CaptureImage extends Activity {
 		if (id == R.id.logout) {
 			pre.edit().clear();
 			startActivity(new Intent(getApplicationContext(), Login.class));
+			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}

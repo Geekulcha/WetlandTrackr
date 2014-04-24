@@ -152,10 +152,7 @@ public class LandAccess extends Activity {
 						latLng = arg0;
 
 					} else {
-						Toast.makeText(
-								getApplicationContext(),
-								"You can not select more the one landmarks at once",
-								Toast.LENGTH_SHORT).show();
+
 						allowPropmt();
 					}
 				}
@@ -175,7 +172,7 @@ public class LandAccess extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent ci = new Intent(getApplicationContext(),
-						WetlandTrackr.class);
+						CaptureImage.class);
 				startActivity(ci);
 
 			}
@@ -197,6 +194,7 @@ public class LandAccess extends Activity {
 										LandAccess.class).putExtra("latitude",
 										String.valueOf(latitude)).putExtra(
 										"longitude", String.valueOf(longitude)));
+								finish();
 								x = 0;
 							}
 						}).setNegativeButton("No", null).show();
@@ -232,6 +230,7 @@ public class LandAccess extends Activity {
 		if (id == R.id.logout) {
 			pre.edit().clear();
 			startActivity(new Intent(getApplicationContext(), Login.class));
+			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
